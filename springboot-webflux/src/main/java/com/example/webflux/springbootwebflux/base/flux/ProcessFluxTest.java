@@ -1,23 +1,30 @@
 package com.example.webflux.springbootwebflux.base.flux;
 
+import com.example.webflux.springbootwebflux.base.flux.domain.Book;
 import com.example.webflux.springbootwebflux.base.flux.domain.CustomObjectFlux;
+import com.example.webflux.springbootwebflux.base.flux.domain.Order;
+import com.example.webflux.springbootwebflux.base.flux.domain.OrderItem;
 import com.example.webflux.springbootwebflux.base.flux.domain.PersonFlux;
 import org.junit.Test;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.GroupedFlux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
 
-import java.io.Serializable;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -866,6 +873,299 @@ public class ProcessFluxTest {
      *
      */
 
+
+    /**
+     * firstWithSignal(Publisher<? extends I>... sources)
+     * 选择第一个发出任何信号的发布服务器（onNext/onError/onComplete），
+     * 并重播该发布服务器的所有信号，有效地表现得像这些竞争源中最快的。
+     *
+     * 可以从多个 Publisher 中获取第一个信号（信号包括onNext、onError和onComplete），
+     * 并将该信号作为新的 Flux 进行订阅。如果其中一个 Publisher 产生了信号，
+     * 那么其他的 Publisher 就会自动取消订阅。
+     *
+     * 在使用 firstWithSignal 方法时，需要注意以下几点：
+     *
+     * 如果多个 Publisher 中同时产生信号，只会获取第一个信号，
+     * 其他信号将被忽略，这可能会导致一些未完成的操作未被及时清理，从而引发问题。
+     *
+     * 由于 firstWithSignal 方法要求所有的 Publisher 具有相同的类型参数，
+     * 因此我们需要在创建 Flux 时使用 map 或 flatMap 等操作符将不同类型的数据转换为相同的类型。
+     *
+     */
+    @Test
+    public void processTest33() throws InterruptedException {
+        Flux<PersonFlux> personFlux = Flux.just(
+                new PersonFlux("Alice", 25),
+                new PersonFlux("Alice", 25),
+                new PersonFlux("Bob", 30)
+
+        );
+        Flux<PersonFlux> personFlux2 = Flux.just(
+                new PersonFlux("Alice", 24),
+                new PersonFlux("Charlie", 20),
+                new PersonFlux("Bob", 32),
+                new PersonFlux("Charlie1", 24)
+        );
+
+        Mono<PersonFlux> charlie = Mono.just(new PersonFlux("Charlie", 20));
+
+        Flux.firstWithSignal(charlie,personFlux,personFlux2).subscribe(System.out::println);
+    }
+
+    /**
+     * firstWithValue(Publisher<? extends I> first, Publisher<? extends I>... others)
+     * 选择第一个发出任何值的发布服务器，并重播该发布服务器中的所有值，有效地表现为第一个发出onNext的源
+     *
+     *
+     *
+     *
+     */
+    @Test
+    public void processTest34() throws InterruptedException {
+        Flux<PersonFlux> personFlux = Flux.just(
+                new PersonFlux("Alice", 25),
+                new PersonFlux("Alice", 25),
+                new PersonFlux("Bob", 30)
+
+        );
+        Flux<PersonFlux> personFlux2 = Flux.just(
+                new PersonFlux("Alice", 24),
+                new PersonFlux("Charlie", 20),
+                new PersonFlux("Bob", 32),
+                new PersonFlux("Charlie1", 24)
+        );
+    }
+
+    /**
+     * groupBy(Function<? super T,? extends K> keyMapper)
+     * 根据提供的keyMapper Function生成的结果，将该序列划分为每个唯一键的动态创建的通量（或组）。
+     * @throws InterruptedException
+     */
+    @Test
+    public void processTest35() throws InterruptedException {
+        Flux<PersonFlux> personFlux = Flux.just(
+                new PersonFlux("Alice", 25),
+                new PersonFlux("Alice", 25),
+                new PersonFlux("Bob", 30),
+                new PersonFlux("Alice", 24),
+                new PersonFlux("Charlie", 20),
+                new PersonFlux("Bob", 32),
+                new PersonFlux("Bob", 32),
+                new PersonFlux("Charlie1", 24)
+
+        );
+
+        Mono<List<PersonFlux>> listMono = personFlux.groupBy(person -> Tuples.of(person.getName(), person.getAge()))
+                .flatMap(current -> {
+                    Tuple2<String, Integer> key = current.key();
+                    String t1 = key.getT1();
+                    Integer t2 = key.getT2();
+                    System.out.println(t1 + ":" + t2);
+                    PersonFlux personFluxInit = new PersonFlux(t1 + "_" + t2, 0);
+                    Mono<PersonFlux> reduce = current.reduce(personFluxInit, (sum, element) -> {
+                        sum.setAge(sum.getAge() + element.getAge());
+                        return sum;
+                    });
+                    return reduce;
+                }).collectList();
+        listMono.subscribe(System.out::println);
+
+    }
+
+    /**
+     * groupBy(Function<? super T,? extends K> keyMapper, Function<? super T,? extends V> valueMapper)
+     * keyMapper：将 Flux 中的每个元素 (T) 映射到用于分组的键 (K) 的函数。
+     * valueMapper：将 Flux 中的每个元素 (T) 映射到每个组的值 (V) 的函数
+     * @throws InterruptedException
+     */
+    @Test
+    public void processTest36() throws InterruptedException {
+        Flux<PersonFlux> personFlux = Flux.just(
+                new PersonFlux("Alice", 25),
+                new PersonFlux("Alice", 25),
+                new PersonFlux("Bob", 30),
+                new PersonFlux("Alice", 24),
+                new PersonFlux("Charlie", 20),
+                new PersonFlux("Bob", 32),
+                new PersonFlux("Bob", 32),
+                new PersonFlux("Charlie1", 24)
+
+        );
+
+        Flux<GroupedFlux<Tuple2<String, Integer>, String>> groupedFluxFlux = personFlux.groupBy(person -> Tuples.of(person.getName(), person.getAge()), value -> value.getName() + "_" + value.getAge() + "aa");
+
+        groupedFluxFlux.subscribe(e -> {
+            Tuple2<String, Integer> key = e.key();
+            System.out.println("key:" + key.toString());
+            e.subscribe(v -> {
+                System.out.println("value:" + v);
+            });
+        });
+        /**
+         * key:[Alice,25]
+         * value:Alice_25aa
+         * value:Alice_25aa
+         * key:[Bob,30]
+         * value:Bob_30aa
+         * key:[Alice,24]
+         * value:Alice_24aa
+         * key:[Charlie,20]
+         * value:Charlie_20aa
+         * key:[Bob,32]
+         * value:Bob_32aa
+         * value:Bob_32aa
+         * key:[Charlie1,24]
+         * value:Charlie1_24aa
+         */
+
+    }
+
+    /**
+     * flatMap(Function<? super T,? extends Publisher<? extends V>> mapper, int concurrency, int prefetch)
+     * 将此Flux发出的元素异步转换为发布器，然后通过合并将这些内部发布器扁平化为单个Flux，从而允许它们交错。
+     * mapper：将 Flux 中的每个元素 (T) 映射成一个 Publisher（V） 的函数。
+     * concurrency：并发处理的最大数量。表示同时有多少个元素可以被订阅和处理。
+     * prefetch：每个订阅的 Publisher 预取的元素数量。当并发处理时，它可以提高性能。
+     *
+     * @throws InterruptedException
+     */
+    @Test
+    public void processTest37() throws InterruptedException {
+        Flux<PersonFlux> personFlux = Flux.just(
+                new PersonFlux("Alice", 25),
+                new PersonFlux("Alice", 25),
+                new PersonFlux("Bob", 30),
+                new PersonFlux("Alice", 24),
+                new PersonFlux("Charlie", 20),
+                new PersonFlux("Bob", 32),
+                new PersonFlux("Bob", 32),
+                new PersonFlux("Charlie1", 24)
+                );
+        Flux<String> stringFlux = personFlux.flatMap(s -> Flux.just(s.getName() + "###" + s.getAge() + "flatMap"), 2, 2);
+        stringFlux.subscribe(System.out::println);
+    }
+
+    /**
+     * flatMapIterable(Function<? super T,? extends Iterable<? extends R>> mapper)
+     * 将该通量发射的项目转换为Iterable，然后通过将这些元素合并为单个通量来展平这些元素。
+     * mapper：将 Flux 中的每个元素 (T) 映射成一个 Iterable（R） 的函数
+     */
+    @Test
+    public void processTest38() {
+        // 创建一个 Book 对象列表
+        List<Book> books = Arrays.asList(
+                new Book("Book 1", Arrays.asList("Fiction", "Thriller")),
+                new Book("Book 2", Arrays.asList("Non-fiction", "History")),
+                new Book("Book 3", Arrays.asList("Fiction", "Mystery"))
+        );
+
+        // 将列表转换为 Flux
+        Flux<Book> bookFlux = Flux.fromIterable(books);
+
+        // 使用 flatMapIterable 进行标签列表的合并
+        Flux<String> tagsFlux = bookFlux.flatMapIterable(Book::getTags);
+
+        // 订阅并打印合并后的标签列表
+        tagsFlux.subscribe(tag -> System.out.println("Tag: " + tag));
+    }
+
+    /**
+     * flatMapSequential(Function<? super T,? extends Publisher<? extends R>> mapper, int maxConcurrency, int prefetch)
+     * 将此Flux发出的元素异步转换为发布者，然后将这些内部发布者扁平化为单个Flux，但按其源元素的顺序合并它们。
+     * flatMapSequential 与 flatMap 不同之处在于，它会保持原始元素的顺序，而不是无序地合并结果。
+     *  mapper：将 Flux 中的每个元素 (T) 映射成一个 Publisher（R） 的函数。
+     * maxConcurrency：并发处理的最大数量。表示同时有多少个元素可以被订阅和处理。
+     * prefetch：每个订阅的 Publisher 预取的元素数量。当并发处理时，它可以提高性能。
+     */
+    @Test
+    public void processTest39() {
+        // 创建一个 Book 对象列表
+        List<Book> books = Arrays.asList(
+                new Book("Book 1", Arrays.asList("Fiction", "Thriller")),
+                new Book("Book 2", Arrays.asList("Non-fiction", "History")),
+                new Book("Book 3", Arrays.asList("Fiction", "Mystery"))
+        );
+
+        // 将列表转换为 Flux
+        Flux<Book> bookFlux = Flux.fromIterable(books);
+
+        // 使用 flatMapIterable 进行标签列表的合并
+        Flux<String> tagsFlux = bookFlux.flatMapSequential(s -> Flux.fromIterable(s.getTags()),2,2);
+
+        // 订阅并打印合并后的标签列表
+        tagsFlux.subscribe(tag -> System.out.println("Tag: " + tag));
+    }
+
+    /**
+     * groupJoin(
+     * Publisher<? extends TRight> other,
+     * Function<? super T,? extends Publisher<TLeftEnd>> leftEnd,
+     * Function<? super TRight,? extends Publisher<TRightEnd>> rightEnd,
+     * BiFunction<? super T,? super Flux<TRight>,? extends R> resultSelector)
+     * 将两个发布者的值映射到时间窗口中，并在窗口重叠的情况下发出值的组合。
+     * groupJoin 操作符用于将一个 Flux 与另一个 Publisher 进行连接，
+     * 并且将两者之间的元素进行分组。它将源 Flux 的元素与另一个 Publisher (other) 的元素进行连接，
+     * 并根据提供的选择器函数进行分组。然后，使用提供的结果选择器函数将每个分组中的元素组合成最终的结果。
+     *
+     * other: 另一个 Publisher，用于与源 Flux 进行连接。
+     * leftEnd: 将源 Flux 中的每个元素 (T) 映射成一个 Publisher (TLeftEnd) 的函数，该 Publisher 用于决定如何关闭源 Flux 中的组。
+     * rightEnd: 将 other Publisher 中的每个元素 (TRight) 映射成一个 Publisher (TRightEnd) 的函数，该 Publisher 用于决定如何关闭 other Publisher 中的组。
+     * resultSelector: 用于将源 Flux 中的每个元素与对应的 other Publisher 中的元素进行组合，并返回最终结果的函数。
+     */
+    @Test
+    public void processTest40() {
+        // 创建订单 Flux
+        Flux<Order> orderFlux = Flux.just(
+                new Order(1),
+                new Order(2),
+                new Order(3)
+        );
+
+        // 创建订单项 Flux
+        Flux<OrderItem> orderItemFlux = Flux.just(
+                new OrderItem(101, 1),
+                new OrderItem(102, 1),
+                new OrderItem(103, 2),
+                new OrderItem(104, 2),
+                new OrderItem(105, 3)
+        );
+
+        // 使用 groupJoin 进行连接和分组
+        /*Flux<String> resultFlux = orderFlux.groupJoin(
+                orderItemFlux,
+                order -> Flux.just("Order: " + order.getOrderId()),
+                orderItem -> Flux.just("OrderItem: " + orderItem.getItemId()),
+                (order, orderItems) -> order + " with " + orderItems.collectList().flatMap(list -> Mono.just(list.toString()))
+        );*/
+
+        Flux<String> resultFlux = orderFlux.groupJoin(
+                orderItemFlux,
+                order -> Flux.just("Order: " + order.getOrderId()),
+                orderItem -> Flux.just("OrderItem: " + orderItem.getItemId()),
+                (order, orderItems) -> order + " with " + orderItems.collectList().flatMap(list -> Mono.just(list.toString()))
+        );
+
+        // 订阅并打印最终结果
+        resultFlux.subscribe(result -> System.out.println("Result: " + result));
+    }
+    
+    @Test
+    public void test11() {
+        Flux<Integer> left = Flux.just(1, 2, 3);
+        Flux<String> right = Flux.just("A", "B", "C");
+
+        left.groupJoin(right,
+                l -> Flux.just(l + 10), // 左边序列的结束信号
+                r -> Flux.just(r + "X"), // 右边序列的结束信号
+                (l, rs) -> rs.collectList().map(list -> l + ": " + list)) // resultselector函数，将左侧元素和右侧元素列表合并为字符串
+                .subscribe(System.out::println); // 订阅结果流并打印输出
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 
 
 }
