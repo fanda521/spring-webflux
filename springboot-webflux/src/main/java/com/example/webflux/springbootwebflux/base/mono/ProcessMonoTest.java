@@ -33,11 +33,11 @@ public class ProcessMonoTest {
     /**
      * cast(Class<E> clazz)
      * 将当前Mono生成的类型转换为目标生成的类型。
-     *
+     * <p>
      * 不能将确定的class 转成其他的
      * json 格式的字符串也不行
      * 父类转子类不行
-     *
+     * <p>
      * 只有 子类转父类 可以
      */
     @Test
@@ -46,7 +46,7 @@ public class ProcessMonoTest {
         productMono.setName("洗衣液");
         productMono.setId(1L);
         productMono.setPrice(new BigDecimal("22.3456"));
-        productMono.setAddress(Arrays.asList("广东","江西","武汉"));
+        productMono.setAddress(Arrays.asList("广东", "江西", "武汉"));
 
 
         /*Mono<ProductMono> just = Mono.just(productMono);
@@ -75,7 +75,7 @@ public class ProcessMonoTest {
         foodSonMono.setName("洗衣液");
         foodSonMono.setId(1L);
         foodSonMono.setPrice(new BigDecimal("22.3456"));
-        foodSonMono.setAddress(Arrays.asList("广东","江西","武汉"));
+        foodSonMono.setAddress(Arrays.asList("广东", "江西", "武汉"));
         foodSonMono.setTaste("美味香甜");
         foodSonMono.setWeight(new Double(23.44));
 
@@ -174,7 +174,7 @@ public class ProcessMonoTest {
     /**
      * firstWithValue(Iterable<? extends Mono<? extends T>> monos)
      * 选择第一个发出任何值的Mono源，并重播该信号，有效地表现为第一个发出onNext的源。
-     *
+     * <p>
      * 用于从一组 Mono 对象中获取第一个发出值的 Mono。它接受一个 Iterable<? extends Mono<? extends T>> 参数，
      * 表示要检查的 Mono 对象的集合。如果集合中的任何 Mono 对象发出了值，则返回第一个发出值的 Mono；
      * 如果所有 Mono 对象都没有发出值，则返回一个空的 Mono。
@@ -203,8 +203,8 @@ public class ProcessMonoTest {
     }
 
     /**
-     * 	flatMap(Function<? super T,? extends Mono<? extends R>> transformer)
-     * 	异步转换此Mono发出的项，返回另一个Mono发出（可能更改值类型）的值。
+     * flatMap(Function<? super T,? extends Mono<? extends R>> transformer)
+     * 异步转换此Mono发出的项，返回另一个Mono发出（可能更改值类型）的值。
      */
     @Test
     public void processTest09() {
@@ -231,7 +231,7 @@ public class ProcessMonoTest {
     /**
      * flatMapIterable(Function<? super T,? extends Iterable<? extends R>> mapper)
      * 将这个Mono发出的项目转换为Iterable，然后将其元素转发到返回的Flux中。
-     *
+     * <p>
      * 可以用来将 Mono 中的元素转换为一个可迭代对象，并将其展平为一个 Flux 对象。
      * 它的作用类似于 flatMap 操作符，但是可以处理可迭代对象作为返回结果。
      */
@@ -243,14 +243,12 @@ public class ProcessMonoTest {
     }
 
 
-
     /**
      * flatMapMany(Function<? super T,? extends Publisher<? extends R>> mapper)
      * 将此Mono发射的项目转换为发布器，然后将其发射转发到返回的Flux中。
-     *
+     * <p>
      * 可以用来将 Mono 中的元素转换为一个 Flux 对象，并将其展平为一个新的 Flux 对象。
      * 它的作用类似于 flatMap 操作符，但是可以处理 Flux 对象作为返回结果。
-     *
      */
     @Test
     public void processTest11() {
@@ -283,10 +281,10 @@ public class ProcessMonoTest {
     }
 
     /**
-     * 	mapNotNull(Function<? super T,? extends R> mapper)
-     * 	通过对该Mono发出的项应用同步函数来转换该项，该函数允许生成null值。
-     *
-     * 	可以用于将 Mono 中的元素应用于一个转换函数，并过滤掉转换结果为 null 的元素，返回一个新的 Mono 对象。
+     * mapNotNull(Function<? super T,? extends R> mapper)
+     * 通过对该Mono发出的项应用同步函数来转换该项，该函数允许生成null值。
+     * <p>
+     * 可以用于将 Mono 中的元素应用于一个转换函数，并过滤掉转换结果为 null 的元素，返回一个新的 Mono 对象。
      */
     @Test
     public void processTest12() {
@@ -306,7 +304,7 @@ public class ProcessMonoTest {
     /**
      * name(String name)
      * 为该序列指定一个名称，只要这是第一个可访问的Scannableparents（），就可以使用Scannable.name（）检索该序列。
-     *
+     * <p>
      * 通过使用 name 方法，你可以为 Mono 对象设置一个可识别的名称，以便在调试和跟踪时进行标识。
      * 这有助于在复杂的代码中区分和追踪不同的 Mono 对象。
      */
@@ -318,7 +316,7 @@ public class ProcessMonoTest {
     /**
      * mergeWith(Publisher<? extends T> other)
      * Merge emissions of this Mono with the provided Publisher.
-     *
+     * <p>
      * 用于将当前 Mono 对象与另一个 Mono 对象进行合并。合并后的结果将作为新的 Flux 对象返回。
      */
 
@@ -350,9 +348,9 @@ public class ProcessMonoTest {
 
     /**
      * single()
-     *
-     Expect exactly one item from this Mono source or signal NoSuchElementException for an empty source.
-     期望此Mono源中正好有一个项，或者对于空源发出NoSuchElementException信号。
+     * <p>
+     * Expect exactly one item from this Mono source or signal NoSuchElementException for an empty source.
+     * 期望此Mono源中正好有一个项，或者对于空源发出NoSuchElementException信号。
      */
     @Test
     public void processTest16() {
@@ -390,7 +388,7 @@ public class ProcessMonoTest {
     /**
      * switchIfEmpty(Mono<? extends T> alternate)
      * 如果此单声道在没有数据的情况下完成，则回退到另一个单声道
-     *
+     * <p>
      * 用于在源Mono为空时，切换到一个备用的Mono对象。
      */
     @Test
@@ -441,9 +439,9 @@ public class ProcessMonoTest {
     /**
      * then()
      * 返回一个单声道＜Void＞，该单声道只回放来自该单声道的完整信号和错误信号。
-     *
+     * <p>
      * then方法用于在源Mono完成后执行一个操作。它返回一个新的Mono对象，可以继续进行其他操作。
-     *
+     * <p>
      * then(Mono<V> other)
      * Let this Mono complete then play another Mono.
      * 让这个单声道完成，然后播放另一个单声道。
@@ -460,7 +458,7 @@ public class ProcessMonoTest {
     /**
      * thenEmpty(Publisher<Void> other)
      * 返回一个Mono＜Void＞，等待此Mono完成，然后等待提供的Publisher＜Void〕也完成。
-     *
+     * <p>
      * 用于在源Mono完成后执行另一个Publisher对象，并返回一个空的Mono。
      */
     @Test
@@ -468,7 +466,7 @@ public class ProcessMonoTest {
         MonoProcessor<Integer> mono = MonoProcessor.create();
 
         Mono<Void> otherMono = Mono.empty();
-        otherMono.handle((value , sink) ->{
+        otherMono.handle((value, sink) -> {
             try {
                 System.out.println("otherMono enter");
                 TimeUnit.SECONDS.sleep(1);
@@ -493,7 +491,7 @@ public class ProcessMonoTest {
     /**
      * thenMany(Publisher<V> other)
      * 让这个Mono成功完成，然后播放另一个Publisher
-     *
+     * <p>
      * 用于在源Mono完成后执行另一个Publisher对象，并返回该Publisher对象的结果。
      */
     @Test
@@ -515,7 +513,7 @@ public class ProcessMonoTest {
      * thenReturn(V value)
      * Let this Mono complete successfully, then emit the provided value.
      * 让这个Mono成功完成，然后发出所提供的值。
-     *
+     * <p>
      * 用于在源Mono完成后返回一个指定的值。
      */
 
@@ -530,8 +528,8 @@ public class ProcessMonoTest {
          */
     }
 
-    private Integer sum (Integer data) {
-        return  data * data;
+    private Integer sum(Integer data) {
+        return data * data;
     }
 
     /**
@@ -540,7 +538,7 @@ public class ProcessMonoTest {
      * 该对象允许下游消费者使用默认时钟（Scheduler.parallel（））
      * 查看以纳秒分辨率收集的各种时间信息：Timed.elapsed（）：
      * 自订阅以来以纳秒为单位的时间，作为Duration。
-     *
+     * <p>
      * 用于在源Mono发出元素时，将元素包装为Timed对象，该对象包含元素值以及相对于订阅开始的时间信息。
      */
 
@@ -563,10 +561,8 @@ public class ProcessMonoTest {
     }
 
     /**
-     * 	timeout(Duration timeout)
-     * 	如果在给定的持续时间内没有项目到达，则传播TimeoutException。
-     *
-     *
+     * timeout(Duration timeout)
+     * 如果在给定的持续时间内没有项目到达，则传播TimeoutException。
      */
 
     @Test
@@ -593,13 +589,13 @@ public class ProcessMonoTest {
 
     /**
      * using(Callable<? extends D> resourceSupplier,
-     *       Function<? super D,? extends Mono<? extends T>> sourceSupplier,
-     *       Consumer<? super D> resourceCleanup)
-     *
-     *       resourceSupplier是一个Callable，用于创建和提供资源；
-     *       monoSupplier是一个函数，接收资源并返回一个Mono对象；
-     *       resourceCleanup是一个消费者函数，用于在完成时释放资源。
-     *
+     * Function<? super D,? extends Mono<? extends T>> sourceSupplier,
+     * Consumer<? super D> resourceCleanup)
+     * <p>
+     * resourceSupplier是一个Callable，用于创建和提供资源；
+     * monoSupplier是一个函数，接收资源并返回一个Mono对象；
+     * resourceCleanup是一个消费者函数，用于在完成时释放资源。
+     * <p>
      * 使用由供应商为每个订阅服务器生成的资源，同时流式传输来自同一资源的Mono的值，
      * 并确保在序列终止或订阅服务器取消时释放该资源
      */
@@ -631,7 +627,7 @@ public class ProcessMonoTest {
     /**
      * when(Iterable<? extends Publisher<?>> sources)
      * 将给定的发布者聚合为一个新的Mono，当所有给定的发布器都完成时，该Mono就会完成。
-     *
+     * <p>
      * 用于等待多个Mono对象都完成后，将它们的结果组合成一个新的Mono对象。
      */
 
@@ -649,7 +645,7 @@ public class ProcessMonoTest {
     /**
      * whenDelayError(Iterable<? extends Publisher<?>> sources)
      * 将给定的发布者聚合为一个新的Mono，当所有给定的源都完成时，该Mono将被实现。
-     *
+     * <p>
      * 用于等待多个Mono对象都完成后，将它们的结果组合成一个新的Mono对象。
      * 与when方法不同的是，whenDelayError方法会延迟抛出异常，直到所有参与的Mono都完成。
      */
@@ -699,10 +695,10 @@ public class ProcessMonoTest {
      * zipWhen(Function<T,Mono<? extends T2>> rightGenerator)
      * 等待这个单声道的结果，使用它通过提供的rightGenerator函数创建第二个单声道，
      * 并将两个结果组合成Tuple2。
-     *
+     * <p>
      * otherFactory：用于生成第二个 Mono 序列的函数，该函数接收第一个 Mono 的结果作为输入，
      * 并返回一个 Publisher（可以是 Mono、Flux 等）。
-     *
+     * <p>
      * combinator：用于将第一个 Mono 和第二个 Mono 的结果进行合并的函数，
      * 该函数接收第一个 Mono 和第二个 Mono 的结果作为输入，并返回一个新的结果。
      */
@@ -712,7 +708,7 @@ public class ProcessMonoTest {
         Mono<Integer> mono1 = Mono.just(1);
         Mono<String> mono2 = Mono.just("A");
 
-        Mono<String> result = mono1.zipWhen(i -> mono2 , (i, s) -> i + s);
+        Mono<String> result = mono1.zipWhen(i -> mono2, (i, s) -> i + s);
         result.subscribe(System.out::println);  // 输出 "1A"
 
     }
@@ -720,7 +716,7 @@ public class ProcessMonoTest {
     /**
      * zipWith(Mono<? extends T2> other, BiFunction<? super T,? super T2,? extends O> combinator)
      * 将这个mono和另一个mono的结果组合成任意O对象，如所提供的组合子函数所定义的。
-     *
+     * <p>
      * 用于将两个 Mono 序列进行合并，并通过一个函数将它们的结果进行组合。
      * other：要合并的第二个 Mono 序列。
      * combinator：用于将第一个 Mono 和第二个 Mono 的结果进行合并的函数，
@@ -735,7 +731,6 @@ public class ProcessMonoTest {
         Mono<String> result = mono1.zipWith(mono2, (i, s) -> i + s);
         result.subscribe(System.out::println);  // 输出 "1A"
     }
-
 
 
 }

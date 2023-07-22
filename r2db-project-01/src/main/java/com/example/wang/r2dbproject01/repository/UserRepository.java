@@ -1,10 +1,8 @@
-package com.example.webflux.springbootwebflux.repository;
+package com.example.wang.r2dbproject01.repository;
 
-import com.example.webflux.springbootwebflux.entity.User;
+import com.example.wang.r2dbproject01.domain.User;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
 
 /**
  * @version 1.0
@@ -13,5 +11,5 @@ import java.util.List;
  * @description
  */
 public interface UserRepository extends ReactiveCrudRepository<User, Integer> {
-    Mono<User> findByName(String name);
+
 }

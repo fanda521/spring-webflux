@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class MyUserDetailsService implements ReactiveUserDetailsService {
     @Resource
     private UserRepository userRepository;
+
     @Override
     public Mono<UserDetails> findByUsername(String username) {
         List<GrantedAuthority> auths = AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_sale1,admin");

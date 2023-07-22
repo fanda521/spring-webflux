@@ -31,7 +31,7 @@ public class FluxTest {
     /**
      * 阻塞是获取元素
      */
-    public void fluxBlockget(){
+    public void fluxBlockget() {
         Flux<String> flux = Flux.create(skin -> {
             for (int i = 0; i < 2; ++i) {
                 try {
@@ -56,25 +56,27 @@ public class FluxTest {
         System.out.println(flux.blockLast());
 
     }
+
     @Test
     public void fluxDoON() {
-        Flux.just(1,2,3,4,5,6,7,8,9)
+        Flux.just(1, 2, 3, 4, 5, 6, 7, 8, 9)
                 .concatWith(Flux.error(new Exception()))
                 //错误时执行
                 .doOnError(e -> System.out.println("报错：" + e))
                 //完成时执行
-                .doOnComplete(()-> System.out.println("数据接收完成"))
+                .doOnComplete(() -> System.out.println("数据接收完成"))
                 //最后执行
-                .doFinally(t-> System.out.println("最后执行信息：" + t))
+                .doFinally(t -> System.out.println("最后执行信息：" + t))
                 .subscribe(System.out::println);
 
     }
+
     @Test
     public void fluxDoNo2() {
         //消费者参与前执行的最后一件事，入参为消费者对象（一般用于修改、添加、删除源数据流）
-        Flux.just(1,2,3,4,5,6,7,8,9)
+        Flux.just(1, 2, 3, 4, 5, 6, 7, 8, 9)
                 .log()
-                .doOnSubscribe(i ->{
+                .doOnSubscribe(i -> {
                     System.out.println("先请求2个");
                     i.request(2);
                     System.out.println("再请求3个");
@@ -92,6 +94,7 @@ public class FluxTest {
                 .subscribe(new Subscriber<Long>() {
                     Subscription subscription;
                     AtomicInteger count = new AtomicInteger();
+
                     @Override
                     public void onSubscribe(Subscription subscription) {
                         this.subscription = subscription;
@@ -108,7 +111,7 @@ public class FluxTest {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        if (count.decrementAndGet() <= 0){
+                        if (count.decrementAndGet() <= 0) {
                             System.out.println("    消费完成，重新请求5个");
                             subscription.request(5);
                             count.set(5);
@@ -128,13 +131,15 @@ public class FluxTest {
         Thread.sleep(5000L);
 
     }
+
     @Test
     public void fluxBasicSus() {
-        Flux.range(1,50)
+        Flux.range(1, 50)
                 .log()
                 .subscribe(new BaseSubscriber<Integer>() {
                     private int count = 0;
                     private final int limit = 5;
+
                     @Override
                     protected void hookOnSubscribe(Subscription subscription) {
                         request(limit);
@@ -147,13 +152,14 @@ public class FluxTest {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        if (++count == limit){
+                        if (++count == limit) {
                             request(count);
                             count = 0;
                         }
                     }
                 });
     }
+
     @Test
     public void fluxLimitRate() throws InterruptedException {
         Flux.interval(Duration.ofMillis(10L))

@@ -18,7 +18,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FoodSonMono extends ProductMono{
+public class FoodSonMono extends ProductMono {
     private Long id;
 
     private String name;

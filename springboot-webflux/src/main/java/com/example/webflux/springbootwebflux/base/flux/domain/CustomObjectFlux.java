@@ -24,7 +24,6 @@ public class CustomObjectFlux {
     private List<Integer> negatives = new ArrayList<>();
 
 
-
     public void addPositive(int num) {
         positives.add(num);
     }

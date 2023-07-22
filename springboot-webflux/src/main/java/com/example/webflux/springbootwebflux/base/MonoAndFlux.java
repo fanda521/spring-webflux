@@ -27,15 +27,15 @@ public class MonoAndFlux {
 
     @Test
     public void createFlux() {
-        Flux.just(1,2,3,4,5).subscribe(System.out::println);
+        Flux.just(1, 2, 3, 4, 5).subscribe(System.out::println);
         System.out.println("-----------------");
-        Flux.fromIterable(Arrays.asList("a","b","c")).subscribe(System.out::print);
+        Flux.fromIterable(Arrays.asList("a", "b", "c")).subscribe(System.out::print);
         System.out.println("-------------------");
-        Flux.fromArray(new String[] {"11","22" }).subscribe(System.out::print);
+        Flux.fromArray(new String[]{"11", "22"}).subscribe(System.out::print);
         System.out.println("---------------------");
-        Flux.fromStream(Stream.of(1,23,3,4)).subscribe(System.out::print);
+        Flux.fromStream(Stream.of(1, 23, 3, 4)).subscribe(System.out::print);
         System.out.println("--------------------");
-        Flux.range(1,10).subscribe(System.out::print);
+        Flux.range(1, 10).subscribe(System.out::print);
     }
 
     @Test
@@ -61,18 +61,18 @@ public class MonoAndFlux {
         //interval() 方法可以用来生成从 0 开始递增的 Long 对象的数据序列
         Flux.interval(Duration.ofMillis(200))
                 //  map可以对数据进行处理
-                .map(i->"执行内容："+i)
+                .map(i -> "执行内容：" + i)
                 //限制执行5次
                 .take(5)
                 .subscribe(System.out::println);
-                //避免主线程提前结束
+        //避免主线程提前结束
         Thread.sleep(1100);
 
     }
 
     @Test
     public void flueDelay() throws InterruptedException {
-        Flux.fromIterable(Arrays.asList(1,2,3,4))
+        Flux.fromIterable(Arrays.asList(1, 2, 3, 4))
                 //延时发送
                 .delayElements(Duration.ofMillis(100L))
                 .subscribe(System.out::println);
@@ -154,21 +154,21 @@ public class MonoAndFlux {
 
     @Test
     public void exceptionFluxTest01() {
-        Flux.just(1,2,3,4)
+        Flux.just(1, 2, 3, 4)
                 .concatWith(Mono.error(new Exception("Exception")))
                 /*.doOnError(error -> System.out.println("错误: " + error))
                 //在发生异常时将其入参传递给订阅者
                 .onErrorReturn(404)*/
-                .subscribe(System.out::println,System.err::println,()-> System.out.println("完成"));
+                .subscribe(System.out::println, System.err::println, () -> System.out.println("完成"));
     }
 
     @Test
     public void exceptionFluxTest02() {
-        Flux.just(1,2,3,4)
+        Flux.just(1, 2, 3, 4)
                 .concatWith(Mono.error(new Exception("Exception")))
                 .onErrorResume(e -> {
                     System.out.println(e);
-                    return Flux.just(11,12,13);
+                    return Flux.just(11, 12, 13);
                 })
                 .subscribe(System.out::println);
     }
@@ -176,7 +176,7 @@ public class MonoAndFlux {
 
     @Test
     public void exceptionFluxTest03() {
-        Flux.just(1,2,3,4)
+        Flux.just(1, 2, 3, 4)
                 .concatWith(Mono.error(new Exception("Exception")))
                 .retry(1)
                 .subscribe(System.out::println);
@@ -188,8 +188,8 @@ public class MonoAndFlux {
         /**
          * merge按照所有流中元素的实际产生序列来合并
          */
-        Flux.merge(Flux.interval(Duration.ofMillis(10)).map(i->"执行内容1："+i).take(5),
-                Flux.interval(Duration.ofMillis(10)).map(i->"执行内容2："+i).take(3))
+        Flux.merge(Flux.interval(Duration.ofMillis(10)).map(i -> "执行内容1：" + i).take(5),
+                Flux.interval(Duration.ofMillis(10)).map(i -> "执行内容2：" + i).take(3))
                 .log()
                 .subscribe();
         Thread.sleep(1000);
@@ -203,8 +203,8 @@ public class MonoAndFlux {
          * 例如： FluxA 和FluxB 只有在A消费完后才会去消费B
          */
 
-        Flux.mergeSequential(Flux.interval(Duration.ofMillis(10)).map(i->"执行内容1："+i).take(5),
-                Flux.interval(Duration.ofMillis(10)).map(i->"执行内容2："+i).take(3))
+        Flux.mergeSequential(Flux.interval(Duration.ofMillis(10)).map(i -> "执行内容1：" + i).take(5),
+                Flux.interval(Duration.ofMillis(10)).map(i -> "执行内容2：" + i).take(3))
                 .log()
                 .subscribe();
         Thread.sleep(1000);
@@ -215,8 +215,8 @@ public class MonoAndFlux {
         /**
          * 消费两个流中较小的那个
          */
-        Flux.mergeComparing(Flux.just(1,2,9,4,76,6),
-                Flux.just(2,75,4,3,5,6))
+        Flux.mergeComparing(Flux.just(1, 2, 9, 4, 76, 6),
+                Flux.just(2, 75, 4, 3, 5, 6))
                 .log()
                 .subscribe();
         Thread.sleep(1000);
@@ -242,7 +242,7 @@ public class MonoAndFlux {
     @Test
     public void fluxBufferTimeout() throws InterruptedException {
         Flux.interval(Duration.ofMillis(100L))
-                .bufferTimeout(9,Duration.ofMillis(1000L))
+                .bufferTimeout(9, Duration.ofMillis(1000L))
                 .subscribe(System.out::println);
         Thread.sleep(10000);
 
@@ -263,14 +263,14 @@ public class MonoAndFlux {
                 .subscribe(System.out::println);
 
         Flux.range(1, 10)
-                .bufferUntil(i -> i % 2 == 0,true)
+                .bufferUntil(i -> i % 2 == 0, true)
                 .subscribe(System.out::println);
 
     }
 
     @Test
     public void fluxFilter() {
-        Flux.range(1, 10).filter(i -> i%2 == 0).subscribe(System.out::println);
+        Flux.range(1, 10).filter(i -> i % 2 == 0).subscribe(System.out::println);
 
     }
 
@@ -280,9 +280,9 @@ public class MonoAndFlux {
                 .zipWith(Flux.just(3, 4))
                 .subscribe(System.out::println);
 //通过BiFunction函数对合并的元素进行处理
-        Flux.just(1, 2,3)
+        Flux.just(1, 2, 3)
                 .zipWith(Flux.just(4, 5), (s1, s2) -> s1 + "-" + s2).
-        subscribe(System.out::println);
+                subscribe(System.out::println);
 
     }
 
@@ -294,12 +294,12 @@ public class MonoAndFlux {
 
 //设定默认值
         Flux.range(1, 100)
-                .reduce(100,(x, y) -> x + y)
+                .reduce(100, (x, y) -> x + y)
                 .subscribe(System.out::println);
 
 //可以设置Supplier初始值
         Flux.range(1, 100)
-                .reduceWith(() -> 100, (x ,y) -> x + y)
+                .reduceWith(() -> 100, (x, y) -> x + y)
                 .subscribe(System.out::println);
 
     }
@@ -337,7 +337,7 @@ public class MonoAndFlux {
         Flux.just(5, 10)
                 .concatMap(x -> Flux.interval(
                         Duration.ofMillis(x * 10),
-                        Duration.ofMillis(100)).map(i-> i+"map1").take(x)
+                        Duration.ofMillis(100)).map(i -> i + "map1").take(x)
                 )
                 .subscribe(System.out::println);
         Thread.sleep(1000);
@@ -358,10 +358,11 @@ public class MonoAndFlux {
                 .subscribe(System.out::println);
         Thread.sleep(1000);
     }
+
     @Test
     public void fluxSkip() throws InterruptedException {
         //跳过指定条数
-        Flux.just(1,2,3,4,5,6,7)
+        Flux.just(1, 2, 3, 4, 5, 6, 7)
                 .skip(2)
                 .subscribe(System.out::println);
 
@@ -376,7 +377,7 @@ public class MonoAndFlux {
 
     @Test
     public void fluxDistinct() {
-        Flux.just(1,1,2,2,5,6,7)
+        Flux.just(1, 1, 2, 2, 5, 6, 7)
                 .distinct()
                 .subscribe(System.out::println);
 
@@ -385,15 +386,15 @@ public class MonoAndFlux {
     @Test
     public void getEntityFromFlux() {
         ArrayList<User> users = new ArrayList<>();
-        users.add(new User(1,"jeffrey",24,"N",LocalDate.now(),"123456"));
-        users.add(new User(2,"jeffrey2",24,"N",LocalDate.now(),"123456"));
-        users.add(new User(3,"jeffrey3",24,"N",LocalDate.now(),"123456"));
-        users.add(new User(4,"jeffrey4",24,"N",LocalDate.now(),"123456"));
+        users.add(new User(1, "jeffrey", 24, "N", LocalDate.now(), "123456"));
+        users.add(new User(2, "jeffrey2", 24, "N", LocalDate.now(), "123456"));
+        users.add(new User(3, "jeffrey3", 24, "N", LocalDate.now(), "123456"));
+        users.add(new User(4, "jeffrey4", 24, "N", LocalDate.now(), "123456"));
 
         Flux<User> userFlux = Flux.fromIterable(users);
         Iterable<User> users1 = userFlux.toIterable();
-        for (User user: users1
-             ) {
+        for (User user : users1
+        ) {
             System.out.println(user);
         }
 

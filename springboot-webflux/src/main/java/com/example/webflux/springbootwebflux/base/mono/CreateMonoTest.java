@@ -64,7 +64,7 @@ public class CreateMonoTest {
         // 从Mono 中创建
         Mono.from(Mono.just(2)).log().subscribe(System.out::println);
         // 从flux 中创建，取第一个元素值
-        Mono.from(Flux.just(2,4,6)).log().subscribe(System.out::println);
+        Mono.from(Flux.just(2, 4, 6)).log().subscribe(System.out::println);
     }
 
     /**
@@ -73,7 +73,7 @@ public class CreateMonoTest {
      */
     @Test
     public void createTest05() {
-        Mono.fromRunnable(()->{
+        Mono.fromRunnable(() -> {
             System.out.println("runnable run ...");
         }).log().subscribe(System.out::println);
 
@@ -85,7 +85,7 @@ public class CreateMonoTest {
      */
     @Test
     public void createTest06() {
-        Mono.fromCallable(() ->{
+        Mono.fromCallable(() -> {
             System.out.println("callable run ...");
             return 23;
         }).log().subscribe(System.out::println);
@@ -97,7 +97,7 @@ public class CreateMonoTest {
      */
     @Test
     public void createTest07() {
-        Mono.fromSupplier(() ->{
+        Mono.fromSupplier(() -> {
             System.out.println("supplier run ...");
             return "supplier";
         }).log().subscribe(System.out::println);
@@ -109,7 +109,7 @@ public class CreateMonoTest {
      */
     @Test
     public void createTest08() {
-        Mono.fromDirect(Flux.just(1,2,3)).log().subscribe(System.out::println);
+        Mono.fromDirect(Flux.just(1, 2, 3)).log().subscribe(System.out::println);
         Mono.fromDirect(Mono.just(23)).log().subscribe(System.out::println);
     }
 
@@ -177,7 +177,7 @@ public class CreateMonoTest {
      */
     @Test
     public void createTest13() {
-        Mono.create(sink ->{
+        Mono.create(sink -> {
             System.out.println("create ...");
             sink.success("create");
         }).log().subscribe(System.out::println);

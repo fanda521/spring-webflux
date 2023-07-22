@@ -31,12 +31,12 @@ public class UserController {
     }
 
     @PostMapping("/getUserById")
-    public Mono<User> selectUserById(@RequestParam("id" ) int id) {
+    public Mono<User> selectUserById(@RequestParam("id") int id) {
         return userService.selectByTemplate(id);
     }
 
     @PostMapping("/selectByCondition")
-    public Mono<List<User>> selectByCondition(){
+    public Mono<List<User>> selectByCondition() {
         Mono<List<User>> listMono = userService.selectByCondition();
         List<User> block = listMono.block();
         List<User> users = new ArrayList<>();

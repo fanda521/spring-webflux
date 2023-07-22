@@ -41,7 +41,7 @@ public class ProcessFluxTest {
     /**
      * all(Predicate<? super T> predicate)
      * 如果此序列的所有值都与谓词匹配，则发出单个布尔值true。
-     *
+     * <p>
      * 用于对每个元素进行判断。如果所有元素都满足条件，
      * 则返回一个值为 true 的 Mono；否则返回一个值为 false 的 Mono。
      */
@@ -63,7 +63,7 @@ public class ProcessFluxTest {
     /**
      * any(Predicate<? super T> predicate)
      * 如果此Flux序列的任何值与谓词匹配，则发出单个布尔值true。
-     *
+     * <p>
      * 用于对每个元素进行判断。如果存在至少一个元素满足条件，
      * 则返回一个值为 true 的 Mono；否则返回一个值为 false 的 Mono。
      */
@@ -84,10 +84,10 @@ public class ProcessFluxTest {
     }
 
     /**
-     * 	blockFirst()
-     * 	订阅此Flux并无限期阻止，直到上游发出其第一个值的信号或完成。
-     *
-     * 	用于阻塞地获取 Flux 序列的第一个元素，并返回该元素的值。
+     * blockFirst()
+     * 订阅此Flux并无限期阻止，直到上游发出其第一个值的信号或完成。
+     * <p>
+     * 用于阻塞地获取 Flux 序列的第一个元素，并返回该元素的值。
      */
     @Test
     public void processTest03() {
@@ -105,7 +105,7 @@ public class ProcessFluxTest {
     /**
      * buffer()
      * 将所有传入的值收集到单个List缓冲区中，该缓冲区将在该Flux完成后由返回的Flux发出。
-     *
+     * <p>
      * 用于将 Flux 序列中的元素按照指定的规则进行分组，
      * 然后将每个分组的元素作为一个集合放入新的 Flux 序列中。
      */
@@ -119,10 +119,10 @@ public class ProcessFluxTest {
 
     /**
      * buffer(Duration bufferingTimespan,
-     *        Duration openBufferEvery,
-     *        Scheduler timer)
+     * Duration openBufferEvery,
+     * Scheduler timer)
      * 将传入值收集到在给定openBufferEvery周期创建的多个List缓冲区中，如在提供的Scheduler上测量的那样
-     *
+     * <p>
      * 可以根据时间窗口和间隔时间将 Flux 序列中的元素分组为集合。
      * bufferingTimespan：时间窗口的持续时间，用于确定每个分组的时间范围。
      * openBufferEvery：分组的间隔时间，用于确定何时开始新的分组。
@@ -135,7 +135,6 @@ public class ProcessFluxTest {
         Scheduler scheduler = Schedulers.parallel();
         Flux<List<Long>> bufferedFlux = flux.buffer(Duration.ofSeconds(1), Duration.ofMillis(500), scheduler);
         bufferedFlux.subscribe(System.out::println);  // 输出: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [10, 11, 12, 13, 14, 15, 16, 17, 18, 19], ...
-
 
 
         Flux<Long> flux2 = Flux.interval(Duration.ofMillis(100));
@@ -171,7 +170,7 @@ public class ProcessFluxTest {
      * buffer(int maxSize, int skip, Supplier<C> bufferSupplier)
      * 将传入值收集到多个用户定义的“收集”缓冲区中，每次达到给定的最大大小或此Flux完成时，
      * 返回的Flux都会发出这些缓冲区。
-     *
+     * <p>
      * 可以根据元素数量来分组 Flux 序列，并可以自定义缓冲区的类型。
      * maxSize：每个分组的最大元素数量。
      * skip：每个分组之间跳过的元素数量。
@@ -193,14 +192,14 @@ public class ProcessFluxTest {
 
     /**
      * bufferTimeout(int maxSize,
-     *               Duration maxTime,
-     *               Scheduler timer,
-     *               Supplier<C> bufferSupplier)
+     * Duration maxTime,
+     * Scheduler timer,
+     * Supplier<C> bufferSupplier)
      * 将传入值收集到多个用户定义的“收集”缓冲区中，
      * 这些缓冲区将在每次缓冲区达到最大大小或
      * 经过最大持续时间时由返回的Flux发出，
      * 如在提供的Scheduler上测量的那样。
-     *
+     * <p>
      * 可以根据元素数量和时间窗口来分组 Flux 序列，并可以自定义缓冲区的类型。
      * maxSize：每个分组的最大元素数量。
      * maxTime：每个分组的时间窗口，超过时间窗口后会自动触发分组。
@@ -221,14 +220,14 @@ public class ProcessFluxTest {
     /**
      * bufferUntil(Predicate<? super T> predicate, boolean cutBefore)
      * 将传入值收集到多个List缓冲区中，这些缓冲区将在每次给定谓词返回true时由结果Flux发出。
-     *
+     * <p>
      * 用于根据给定的条件对 Flux 序列中的元素进行分组，
      * 并将每个分组的元素作为一个集合放入新的 Flux 序列中。
-     *
+     * <p>
      * predicate：用于判断是否要结束当前分组的条件。当条件满足时，会结束当前分组并开始新的分组。
      * cutBefore：是否在满足条件的元素之前结束当前分组。
-     *           若为 true，则将满足条件的元素放入下一个分组；
-     *           若为 false，则将满足条件的元素放入当前分组。
+     * 若为 true，则将满足条件的元素放入下一个分组；
+     * 若为 false，则将满足条件的元素放入当前分组。
      */
     @Test
     public void processTest08() throws InterruptedException {
@@ -255,13 +254,13 @@ public class ProcessFluxTest {
     /**
      * checkpoint(String description, boolean forceStackTrace)
      * 激活回溯（完整部件跟踪或较轻的部件标记，具体取决于forceStackTrace选项）。
-     *
+     * <p>
      * 用于在 Flux 序列中的某个位置添加一个检查点（checkpoint），
      * 以便在出现错误时提供更详细的错误信息。
      * description：检查点的描述信息，用于标识检查点的位置。
      * forceStackTrace：是否强制生成详细的堆栈跟踪信息。
-     *                  若为 true，则在错误信息中包含完整的堆栈跟踪；
-     *                  若为 false，则只包含简要的错误信息。
+     * 若为 true，则在错误信息中包含完整的堆栈跟踪；
+     * 若为 false，则只包含简要的错误信息。
      */
     @Test
     public void processTest09() throws InterruptedException {
@@ -280,7 +279,7 @@ public class ProcessFluxTest {
      * collect(Collector<? super T,A,? extends R> collector)
      * 通过应用Java 8流API收集器，将此Flux发出的所有元素收集到一个容器中。
      * 当此序列完成时，将发出收集的结果，如果序列为空，则发出空容器。
-     *
+     * <p>
      * 用于将 Flux 序列中的元素收集到一个容器中，
      * 并将容器作为一个新的 Mono 序列进行返回。
      */
@@ -295,7 +294,7 @@ public class ProcessFluxTest {
     /**
      * collect(Supplier<E> containerSupplier, BiConsumer<E,? super T> collector)
      * 通过应用收集器BiConsumer获取容器和每个元素，将此Flux发出的所有元素收集到用户定义的容器中。
-     *
+     * <p>
      * containerSupplier：一个供应商函数，用于创建一个容器对象。
      * collector：一个双消费者函数，用于将元素收集到容器中。
      */
@@ -349,7 +348,7 @@ public class ProcessFluxTest {
      * collectMap(Function<? super T,? extends K> keyExtractor)
      * 将该Flux发射的所有元素收集到哈希映射中，该哈希映射在该序列完成时由生成的Mono发射，
      * 如果序列为空，则发射空的Map
-     *
+     * <p>
      * 用于将 Flux 序列中的元素收集到一个 Map 中，其中元素的键由给定的函数提取，值为元素本身。
      */
     @Test
@@ -361,14 +360,14 @@ public class ProcessFluxTest {
     }
 
     /**
-     * 	collectMap(Function<? super T,? extends K> keyExtractor,
-     *             Function<? super T,? extends V> valueExtractor)
-     *  将该Flux发射的所有元素收集到哈希映射中，该哈希映射在该序列完成时由生成的Mono发射，
-     *  如果序列为空，则发射空的Map。
-     *
-     *  允许根据指定的键提取函数和值提取函数，将 Flux 序列中的元素收集到一个 Map 中。
-     *  keyExtractor：一个函数，用于从元素中提取键。
-     *  valueExtractor：一个函数，用于从元素中提取值。
+     * collectMap(Function<? super T,? extends K> keyExtractor,
+     * Function<? super T,? extends V> valueExtractor)
+     * 将该Flux发射的所有元素收集到哈希映射中，该哈希映射在该序列完成时由生成的Mono发射，
+     * 如果序列为空，则发射空的Map。
+     * <p>
+     * 允许根据指定的键提取函数和值提取函数，将 Flux 序列中的元素收集到一个 Map 中。
+     * keyExtractor：一个函数，用于从元素中提取键。
+     * valueExtractor：一个函数，用于从元素中提取值。
      */
     @Test
     public void processTest14() throws InterruptedException {
@@ -380,12 +379,12 @@ public class ProcessFluxTest {
 
     /**
      * collectMap(Function<? super T,? extends K> keyExtractor,
-     *            Function<? super T,? extends V> valueExtractor,
-     *            Supplier<Map<K,V>> mapSupplier)
-     *
+     * Function<? super T,? extends V> valueExtractor,
+     * Supplier<Map<K,V>> mapSupplier)
+     * <p>
      * 将该通量发射的所有元素收集到用户定义的Map中，该Map在该序列完成时由生成的Mono发射，
      * 如果序列为空，则发射空Map。
-     *
+     * <p>
      * 允许自定义的 Map 容器类型，并根据指定的键提取函数和值提取函数，
      * 将 Flux 序列中的元素收集到该容器中。
      * keyExtractor：一个函数，用于从元素中提取键。
@@ -407,16 +406,16 @@ public class ProcessFluxTest {
 
     /**
      * collectMultimap(Function<? super T,? extends K> keyExtractor,
-     *                 Function<? super T,? extends V> valueExtractor,
-     *                 Supplier<Map<K,Collection<V>>> mapSupplier)
-     *
-     *  将此Flux发射的所有元素收集到用户定义的多映射中，该多映射在该序列完成时由生成的Mono发射，
-     *  如果序列为空，则发射空的多映射。
-     *
-     *  用于根据指定的键提取函数和值提取函数，将 Flux 序列中的元素收集到一个多值 Map 中。
-     *  keyExtractor：一个函数，用于从元素中提取键。
-     *  valueExtractor：一个函数，用于从元素中提取值。
-     *  mapSupplier：一个供应商函数，用于创建一个自定义的 Map 容器对象，其中值是一个集合
+     * Function<? super T,? extends V> valueExtractor,
+     * Supplier<Map<K,Collection<V>>> mapSupplier)
+     * <p>
+     * 将此Flux发射的所有元素收集到用户定义的多映射中，该多映射在该序列完成时由生成的Mono发射，
+     * 如果序列为空，则发射空的多映射。
+     * <p>
+     * 用于根据指定的键提取函数和值提取函数，将 Flux 序列中的元素收集到一个多值 Map 中。
+     * keyExtractor：一个函数，用于从元素中提取键。
+     * valueExtractor：一个函数，用于从元素中提取值。
+     * mapSupplier：一个供应商函数，用于创建一个自定义的 Map 容器对象，其中值是一个集合
      */
     @Test
     public void processTest16() throws InterruptedException {
@@ -435,9 +434,8 @@ public class ProcessFluxTest {
      * collectSortedList()
      * 收集该Flux发射的所有元素，直到该序列完成，
      * 然后按自然顺序将它们排序到由生成的Mono发射的List中
-     *
+     * <p>
      * collectSortedList(Comparator<? super T> comparator)
-     *
      */
     @Test
     public void processTest17() throws InterruptedException {
@@ -459,15 +457,14 @@ public class ProcessFluxTest {
 
     /**
      * combineLatest(Function<Object[],V> combinator,
-     *              int prefetch,
-     *              Publisher<? extends T>... sources)
-     *
+     * int prefetch,
+     * Publisher<? extends T>... sources)
+     * <p>
      * 构建一个Flux，其数据由每个Publisher源中最近发布的值的组合生成。
      * - `combinator`：一个函数，用于将最新的元素组合成一个新的值。
-     *  该函数的参数是一个对象数组，数组中的元素对应于每个源Flux流的最新元素。函数的返回值类型为`v`。
+     * 该函数的参数是一个对象数组，数组中的元素对应于每个源Flux流的最新元素。函数的返回值类型为`v`。
      * - `prefetch`：一个整数值，表示在订阅时要请求的元素数量。
      * - `sources`：一个`Publisher`类型的参数，表示要组合的源Flux流。
-     *
      */
     @Test
     public void processTest18() throws InterruptedException {
@@ -493,8 +490,6 @@ public class ProcessFluxTest {
     /**
      * concat(Publisher<? extends Publisher<? extends T>> sources)
      * 连接作为onNext信号从父发布服务器发出的所有源，将源发出的元素转发到下游。
-     *
-     *
      */
     @Test
     public void processTest19() throws InterruptedException {
@@ -513,13 +508,11 @@ public class ProcessFluxTest {
      * 它可以是一个 Flux、一个 Mono 的集合，或者是其他实现了 Publisher 接口的对象。
      * prefetch：预取数量，表示每个内部发布者（inner publisher）请求的项目数。
      * 这个参数可以用来提高性能，默认值为 Flux#SMALL_BUFFER_SIZE。
-     *
-     *
      */
     @Test
     public void processTest20() throws InterruptedException {
-        Flux flux1 = Flux.just("Alice","Smith", "Johnson");
-        Flux.concat(flux1,2).subscribe(System.out::println);
+        Flux flux1 = Flux.just("Alice", "Smith", "Johnson");
+        Flux.concat(flux1, 2).subscribe(System.out::println);
         /**
          * 测试没有通过
          * reactor.core.Exceptions$ErrorCallbackNotImplemented: java.lang.ClassCastException:
@@ -532,21 +525,21 @@ public class ProcessFluxTest {
     /**
      * concatMap(Function<? super T,? extends Publisher<? extends V>> mapper)
      * 将此Flux发出的元素异步转换为发布器，然后将这些内部发布器扁平化为单个Flux，依次使用串联来保持顺序。
-     *
+     * <p>
      * 这个方法接受一个函数 mapper，该函数将每个源元素类型 T 转换为一个 Publisher 对象，并返回一个新的 Flux 对象。
      * concatMap() 方法会将这些转换后的 Publisher 对象连接在一起，确保它们的顺序是按照源 Flux 中的顺序进行的。
-     *
+     * <p>
      * 它适用于以下场景：
-     *
+     * <p>
      * 1.顺序执行：当需要按顺序处理源 Flux 中的元素，并确保每个元素的处理顺序与源顺序一致时，
      * 可以使用 concatMap() 方法。
-     *
+     * <p>
      * 2.依赖关系：如果每个元素的处理依赖于前一个元素的处理结果，可以使用 concatMap() 方法。
      * 这样可以确保每个元素的处理在前一个元素处理完成后才进行。
-     *
+     * <p>
      * 3.有序转换：如果需要将每个元素转换为一个新的 Publisher 对象，并且希望结果 Flux
      * 中的元素顺序与源 Flux 中的顺序一致，可以使用 concatMap() 方法。
-     *
+     * <p>
      * 4.串行化操作：当需要将并发的操作转换为串行化的操作时，可以使用 concatMap() 方法。
      * 它确保了每个元素的处理在前一个元素处理完成后才开始，从而实现了串行化。
      */
@@ -567,40 +560,37 @@ public class ProcessFluxTest {
     /**
      * concatMapDelayError(Function<? super T,? extends Publisher<? extends V>> mapper)
      * 将此Flux发出的元素异步转换为发布器，然后将这些内部发布器扁平化为单个Flux，依次使用串联来保持顺序。
-     *
+     * <p>
      * concatMapDelayError() 方法在源 Flux 或转换后的 Publisher 中发生错误时，
      * 会将错误推迟到整个流程完成后再处理。这意味着即使某个元素的处理发生错误，
      * 它不会中断整个流程，而是会继续处理下一个元素。
-     *
      */
 
     @Test
     public void processTest22() throws InterruptedException {
         Flux<PersonFlux> personFlux = Flux.just(
-            new PersonFlux("Alice", 25),
-            new PersonFlux("Bob", 30),
-            new PersonFlux("Charlie", 20)
+                new PersonFlux("Alice", 25),
+                new PersonFlux("Bob", 30),
+                new PersonFlux("Charlie", 20)
         );
 
         personFlux
-            .concatMapDelayError(person -> {
-                if (person.getAge() == 25) {
-                    return Flux.error(new RuntimeException("Invalid person"));
-                } else {
-                    return Flux.just(person.getName());
-                }
-            })
-            .subscribe(
-                    System.out::println,
-                    throwable -> System.err.println("Error: " + throwable.getMessage())
-            );
+                .concatMapDelayError(person -> {
+                    if (person.getAge() == 25) {
+                        return Flux.error(new RuntimeException("Invalid person"));
+                    } else {
+                        return Flux.just(person.getName());
+                    }
+                })
+                .subscribe(
+                        System.out::println,
+                        throwable -> System.err.println("Error: " + throwable.getMessage())
+                );
     }
 
     /**
      * concatWith(Publisher<? extends T> other)
      * 将此通量的发射与所提供的发布服务器连接（无交错）。
-     *
-     *
      */
     @Test
     public void processTest23() throws InterruptedException {
@@ -611,8 +601,8 @@ public class ProcessFluxTest {
         );
 
         Flux<PersonFlux> personFlux2 = Flux.just(
-                new PersonFlux("Tom",22),
-                new PersonFlux("Jane",24),
+                new PersonFlux("Tom", 22),
+                new PersonFlux("Jane", 24),
                 new PersonFlux("Charlie", 20)
         );
 
@@ -634,8 +624,8 @@ public class ProcessFluxTest {
         );
 
 
-        Flux<PersonFlux> concatenatedFlux = personFlux.concatWithValues(new PersonFlux("Tom",22),
-                new PersonFlux("Jane",24),
+        Flux<PersonFlux> concatenatedFlux = personFlux.concatWithValues(new PersonFlux("Tom", 22),
+                new PersonFlux("Jane", 24),
                 new PersonFlux("Charlie", 20));
 
         concatenatedFlux.subscribe(person -> System.out.println(person.getName()));
@@ -676,17 +666,16 @@ public class ProcessFluxTest {
 
     /**
      * distinct(Function<? super T,? extends V> keySelector,
-     *          Supplier<C> distinctStoreSupplier,
-     *          BiPredicate<C,V> distinctPredicate,
-     *          Consumer<C> cleanup)
+     * Supplier<C> distinctStoreSupplier,
+     * BiPredicate<C,V> distinctPredicate,
+     * Consumer<C> cleanup)
      * 对于每个订阅服务器，通过在任意用户提供的<C>存储上应用BiPredicate
      * 和通过用户提供的Function提取的密钥进行比较，跟踪已看到的Flux中的元素并过滤出重复项。
-     *
+     * <p>
      * keySelector：一个函数，用于从元素中提取一个用于比较的键。
      * distinctStoreSupplier：一个供应商函数，用于创建用于存储不重复键的状态对象。
      * distinctPredicate：一个二元谓词，用于判断给定键是否已经存在于存储对象中。
      * cleanup：一个消费者函数，用于在 Flux 完成或取消订阅时清理存储对象。
-     *
      */
     @Test
     public void processTest27() throws InterruptedException {
@@ -711,10 +700,9 @@ public class ProcessFluxTest {
 
     /**
      * distinct(Function<? super T,? extends V> keySelector,
-     *          Supplier<C> distinctCollectionSupplier)
+     * Supplier<C> distinctCollectionSupplier)
      * 对于每个订阅服务器，跟踪已经看到的Flux中的元素，并过滤掉重复的元素，
      * 通过用户提供的Function提取的密钥和提供的Collection（通常是Set）的add方法进行比较。
-     *
      */
     @Test
     public void processTest28() throws InterruptedException {
@@ -750,7 +738,7 @@ public class ProcessFluxTest {
                 new PersonFlux("Bob", 32),
                 new PersonFlux("Charlie1", 24)
         );
-        Flux<Tuple2<Long,PersonFlux>> elapsedFlux = personFlux
+        Flux<Tuple2<Long, PersonFlux>> elapsedFlux = personFlux
                 .elapsed(Schedulers.single());
 
         elapsedFlux.subscribe(tuple -> {
@@ -770,7 +758,7 @@ public class ProcessFluxTest {
     /**
      * elementAt(int index, T defaultValue)
      * 仅在给定索引位置发射元素，或者如果序列较短，则回退到默认值。
-     *
+     * <p>
      * 用于获取流中指定索引处的元素，如果索引超出范围，则返回默认值。
      * index：指定的索引位置，从0开始计数。
      * defaultValue：索引超出范围时返回的默认值。
@@ -802,8 +790,6 @@ public class ProcessFluxTest {
     /**
      * filter(Predicate<? super T> p)
      * 根据给定的谓词评估每个源值。
-     *
-     *
      */
     @Test
     public void processTest31() throws InterruptedException {
@@ -827,7 +813,7 @@ public class ProcessFluxTest {
     /**
      * filterWhen(Function<? super T,? extends Publisher<Boolean>> asyncPredicate, int bufferSize)
      * 使用生成的Publisher＜Boolean＞测试异步测试此Flux发出的每个值
-     *
+     * <p>
      * 该方法的参数是一个异步谓词（asyncPredicate）函数和缓冲区大小（bufferSize）。
      * 异步谓词函数用来判断流中的元素是否符合过滤条件，返回值是一个Boolean类型的Publisher。
      * 如果异步谓词函数返回的Publisher为true，则保留该元素；
@@ -878,19 +864,18 @@ public class ProcessFluxTest {
      * firstWithSignal(Publisher<? extends I>... sources)
      * 选择第一个发出任何信号的发布服务器（onNext/onError/onComplete），
      * 并重播该发布服务器的所有信号，有效地表现得像这些竞争源中最快的。
-     *
+     * <p>
      * 可以从多个 Publisher 中获取第一个信号（信号包括onNext、onError和onComplete），
      * 并将该信号作为新的 Flux 进行订阅。如果其中一个 Publisher 产生了信号，
      * 那么其他的 Publisher 就会自动取消订阅。
-     *
+     * <p>
      * 在使用 firstWithSignal 方法时，需要注意以下几点：
-     *
+     * <p>
      * 如果多个 Publisher 中同时产生信号，只会获取第一个信号，
      * 其他信号将被忽略，这可能会导致一些未完成的操作未被及时清理，从而引发问题。
-     *
+     * <p>
      * 由于 firstWithSignal 方法要求所有的 Publisher 具有相同的类型参数，
      * 因此我们需要在创建 Flux 时使用 map 或 flatMap 等操作符将不同类型的数据转换为相同的类型。
-     *
      */
     @Test
     public void processTest33() throws InterruptedException {
@@ -909,16 +894,12 @@ public class ProcessFluxTest {
 
         Mono<PersonFlux> charlie = Mono.just(new PersonFlux("Charlie", 20));
 
-        Flux.firstWithSignal(charlie,personFlux,personFlux2).subscribe(System.out::println);
+        Flux.firstWithSignal(charlie, personFlux, personFlux2).subscribe(System.out::println);
     }
 
     /**
      * firstWithValue(Publisher<? extends I> first, Publisher<? extends I>... others)
      * 选择第一个发出任何值的发布服务器，并重播该发布服务器中的所有值，有效地表现为第一个发出onNext的源
-     *
-     *
-     *
-     *
      */
     @Test
     public void processTest34() throws InterruptedException {
@@ -939,6 +920,7 @@ public class ProcessFluxTest {
     /**
      * groupBy(Function<? super T,? extends K> keyMapper)
      * 根据提供的keyMapper Function生成的结果，将该序列划分为每个唯一键的动态创建的通量（或组）。
+     *
      * @throws InterruptedException
      */
     @Test
@@ -976,6 +958,7 @@ public class ProcessFluxTest {
      * groupBy(Function<? super T,? extends K> keyMapper, Function<? super T,? extends V> valueMapper)
      * keyMapper：将 Flux 中的每个元素 (T) 映射到用于分组的键 (K) 的函数。
      * valueMapper：将 Flux 中的每个元素 (T) 映射到每个组的值 (V) 的函数
+     *
      * @throws InterruptedException
      */
     @Test
@@ -1040,7 +1023,7 @@ public class ProcessFluxTest {
                 new PersonFlux("Bob", 32),
                 new PersonFlux("Bob", 32),
                 new PersonFlux("Charlie1", 24)
-                );
+        );
         Flux<String> stringFlux = personFlux.flatMap(s -> Flux.just(s.getName() + "###" + s.getAge() + "flatMap"), 2, 2);
         stringFlux.subscribe(System.out::println);
     }
@@ -1073,7 +1056,7 @@ public class ProcessFluxTest {
      * flatMapSequential(Function<? super T,? extends Publisher<? extends R>> mapper, int maxConcurrency, int prefetch)
      * 将此Flux发出的元素异步转换为发布者，然后将这些内部发布者扁平化为单个Flux，但按其源元素的顺序合并它们。
      * flatMapSequential 与 flatMap 不同之处在于，它会保持原始元素的顺序，而不是无序地合并结果。
-     *  mapper：将 Flux 中的每个元素 (T) 映射成一个 Publisher（R） 的函数。
+     * mapper：将 Flux 中的每个元素 (T) 映射成一个 Publisher（R） 的函数。
      * maxConcurrency：并发处理的最大数量。表示同时有多少个元素可以被订阅和处理。
      * prefetch：每个订阅的 Publisher 预取的元素数量。当并发处理时，它可以提高性能。
      */
@@ -1090,7 +1073,7 @@ public class ProcessFluxTest {
         Flux<Book> bookFlux = Flux.fromIterable(books);
 
         // 使用 flatMapIterable 进行标签列表的合并
-        Flux<String> tagsFlux = bookFlux.flatMapSequential(s -> Flux.fromIterable(s.getTags()),2,2);
+        Flux<String> tagsFlux = bookFlux.flatMapSequential(s -> Flux.fromIterable(s.getTags()), 2, 2);
 
         // 订阅并打印合并后的标签列表
         tagsFlux.subscribe(tag -> System.out.println("Tag: " + tag));
@@ -1106,7 +1089,7 @@ public class ProcessFluxTest {
      * groupJoin 操作符用于将一个 Flux 与另一个 Publisher 进行连接，
      * 并且将两者之间的元素进行分组。它将源 Flux 的元素与另一个 Publisher (other) 的元素进行连接，
      * 并根据提供的选择器函数进行分组。然后，使用提供的结果选择器函数将每个分组中的元素组合成最终的结果。
-     *
+     * <p>
      * other: 另一个 Publisher，用于与源 Flux 进行连接。
      * leftEnd: 将源 Flux 中的每个元素 (T) 映射成一个 Publisher (TLeftEnd) 的函数，该 Publisher 用于决定如何关闭源 Flux 中的组。
      * rightEnd: 将 other Publisher 中的每个元素 (TRight) 映射成一个 Publisher (TRightEnd) 的函数，该 Publisher 用于决定如何关闭 other Publisher 中的组。
@@ -1148,7 +1131,7 @@ public class ProcessFluxTest {
         // 订阅并打印最终结果
         resultFlux.subscribe(result -> System.out.println("Result: " + result));
     }
-    
+
     @Test
     public void test11() {
         Flux<Integer> left = Flux.just(1, 2, 3);

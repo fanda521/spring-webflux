@@ -7,7 +7,7 @@ import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 
 
 @SpringBootApplication
-@EnableR2dbcRepositories(basePackages = {"com.example.springbootwebflux.repository" })
+@EnableR2dbcRepositories(basePackages = {"com.example.springbootwebflux.repository"})
 public class SpringbootWebfluxApplication {
 
     public static void main(String[] args) {
