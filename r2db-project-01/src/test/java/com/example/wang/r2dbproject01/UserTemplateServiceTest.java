@@ -10,6 +10,8 @@ import org.springframework.test.annotation.Commit;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @version 1.0
@@ -54,6 +56,40 @@ public class UserTemplateServiceTest {
          * 2023-07-23 11:19:39.648 DEBUG 23812 --- [actor-tcp-nio-2] o.s.r2dbc.core.DefaultDatabaseClient
          * : Executing SQL statement [INSERT INTO t_user (t_name, t_age, t_sex, t_birthday, t_password) VALUES (?, ?, ?, ?, ?)]
          * User(id=18, name=luck2, age=24, sex=男, birthday=2023-07-23, password=123456)
+         */
+    }
+    @Test
+    public void insertClass2() {
+        User user = User.builder()
+                .age(24)
+                .birthday(LocalDate.now())
+                .name("luck2")
+                .sex("男")
+                .password("123456")
+                .build();
+        User user2 = User.builder()
+                .age(24)
+                .birthday(LocalDate.now())
+                .name("luck3")
+                .sex("男")
+                .password("123456")
+                .build();
+        User user3 = User.builder()
+                .age(24)
+                .birthday(LocalDate.now())
+                .name("luck4")
+                .sex("男")
+                .password("123456")
+                .build();
+        ArrayList<User> users = new ArrayList<>(Arrays.asList(user, user2, user3));
+        userTemplateService.insertClass2(users);
+        /**
+         * 2023-07-23 12:53:36.297 DEBUG 24944 --- [actor-tcp-nio-2] o.s.r2dbc.core.DefaultDatabaseClient
+         * : Executing SQL statement [INSERT INTO t_user (t_name, t_age, t_sex, t_birthday, t_password) VALUES (?, ?, ?, ?, ?)]
+         * User(id=null, name=luck3, age=24, sex=男, birthday=2023-07-23, password=123456, num=null)
+         * User(id=null, name=luck4, age=24, sex=男, birthday=2023-07-23, password=123456, num=null)
+         * 值插入了一行
+         * 其他两个被打印消费了
          */
     }
 

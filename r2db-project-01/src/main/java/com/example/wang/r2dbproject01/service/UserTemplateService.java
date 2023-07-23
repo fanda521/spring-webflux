@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 /**
  * @version 1.0
  * @Aythor allen
@@ -35,6 +37,17 @@ public class UserTemplateService {
                 .using(user);
         userMono.subscribe(System.out::println);
         return userMono;
+    }
+
+    public Flux<User> insertClass2(List<User> userList) {
+        Flux<User> userFlux = template.insert(User.class)
+                .into("t_user")
+                .using(userList.get(0))
+                .then(Mono.just(userList.get(1)))
+                .concatWith(Mono.just(userList.get(2)));
+        userFlux.subscribe(System.out::println);
+        return userFlux;
+
     }
 
     /////// 更新 ///////
