@@ -1,9 +1,6 @@
 package com.example.wang.r2dbproject01.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -22,6 +19,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Builder
 public class User {
     @Id
     private Integer id;
@@ -32,9 +30,11 @@ public class User {
     @Column("t_sex")
     private String sex;
     @Column("t_birthday")
-    private Date birthday;
+    private LocalDate birthday;
     @Column("t_password")
     private String password;
+    @Column("t_num")
+    private String num;
 
 
 }

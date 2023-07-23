@@ -2,7 +2,8 @@ package com.example.wang.r2dbproject01.repository;
 
 import com.example.wang.r2dbproject01.domain.User;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import reactor.core.publisher.Mono;
+import org.springframework.stereotype.Repository;
+
 
 /**
  * @version 1.0
